@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <float.h>
 #include <bits/types/FILE.h>
-#include <malloc.h>
-
 
 double *get_array_of_points(char *filename) {
     int numbers_of_cell, number_of_points, i = 0;
