@@ -5,6 +5,7 @@
 #define NUMBER_OF_COORDINATES_AT_POINT 3 //Количество координат у точки
 #define NUMBER_OF_POINTS_PER_CELL 4 //Количество точек у ячейки
 #define PRINT_READ_DATA 0 //Печть данных, прочитанных из файла
+#define WRITE_TO_FILE 0 //Печать результата в файл
 
 int main(int argc, char **argv) {
 
@@ -13,13 +14,18 @@ int main(int argc, char **argv) {
     if (file != NULL) {
         struct Array_of_points *struct_of_cells = get_array_of_cells(file);
         float *vector_of_points = struct_of_cells->array;
+
+        if (WRITE_TO_FILE) {
+            write_result_to_file("test_array.dat", vector_of_points,
+                                 NUMBER_OF_COORDINATES_AT_POINT,
+                                 struct_of_cells->total_number_of_coordinates / NUMBER_OF_COORDINATES_AT_POINT);
+        }
+
         float *vector_of_collacation_points = get_collocatoin_points(vector_of_points, struct_of_cells->number_of_cell);
     }
 
     return 0;
 }
-
-
 
 
 struct Array_of_points *get_array_of_cells(FILE *file) {
@@ -64,7 +70,7 @@ struct Array_of_points *get_array_of_cells(FILE *file) {
             sizeof(float) * total_number_of_points + sizeof(total_number_of_points) + sizeof(number_of_cell));
 
     array_struct->number_of_cell = number_of_cell;
-    array_struct->number_of_points = total_number_of_points;
+    array_struct->total_number_of_coordinates = total_number_of_points;
     array_struct->array = array_of_points;
 
     return array_struct;
@@ -111,7 +117,7 @@ float *get_collocatoin_points(float *array_of_points, unsigned number_of_cells) 
             for (unsigned k = 0; k < NUMBER_OF_POINTS_PER_CELL; ++k) {
                 coordinate = coordinate + array_of_cell[i][k][j];
             }
-            *pointer_to_array = coordinate/4;
+            *pointer_to_array = coordinate / 4;
             pointer_to_array++;
             array_of_collocation_points[i][j] = coordinate / 4;
             coordinate = initial_coordinate;
@@ -130,4 +136,23 @@ void print_array_of_points(float *array, unsigned number_of_cell, unsigned numbe
         }
         printf("%s", "\n");
     }
+}
+
+void write_result_to_file(char *filename, float *vector_of_points, int number_of_columns, int number_of_rows) {
+    char *path_to_data_file = malloc(sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
+
+    strcat(path_to_data_file, path_to_data_directory);
+    strcat(path_to_data_file, filename);
+
+    FILE *file = fopen(path_to_data_file, "w");
+
+    for (int i = 0; i < number_of_rows; ++i) {
+        for (int j = 0; j < number_of_columns; ++j) {
+            fprintf(file, "%f ", *vector_of_points);
+            vector_of_points++;
+        }
+        fprintf(file, "%s", "\n");
+    }
+
+    fclose(file);
 }
