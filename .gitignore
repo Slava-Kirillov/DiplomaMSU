@@ -1,0 +1,4 @@
+.idea
+cmake-build-debug
+resource/data/collocation_points.dat
+resource/data/sphere.dat
