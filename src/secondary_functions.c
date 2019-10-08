@@ -9,7 +9,9 @@
 const char *path_to_data_directory = "../resource/data/";
 
 struct Array_of_points {
-    unsigned number_of_cell, total_number_of_coordinates, number_of_coordinates_at_point;
+    unsigned number_of_cell,
+            total_number_of_coordinates,
+            number_of_coordinates_at_point;
     float *array;
 };
 
@@ -91,7 +93,7 @@ FILE *get_file(char *filename) {
     return file;
 }
 
-float *get_collocatoin_points(float *array_of_points, unsigned number_of_cells) {
+float *get_collocation_points(float *array_of_points, unsigned number_of_cells) {
     float coordinate = 0, initial_coordinate = 0;
     float array_of_cell[number_of_cells][NUMBER_OF_POINTS_PER_CELL][NUMBER_OF_COORDINATES_AT_POINT];
     float array_of_collocation_points[number_of_cells][NUMBER_OF_COORDINATES_AT_POINT];

@@ -1,6 +1,6 @@
 #include "headers/secondary_functions.h"
 
-#define WRITE_TO_FILE 0 //Печать результата в файл
+#define WRITE_TO_FILE 1 //Печать результата в файл
 
 int main(int argc, char **argv) {
 
@@ -17,10 +17,11 @@ int main(int argc, char **argv) {
                                  struct_of_cells->number_of_coordinates_at_point);
         }
 
-        float *vector_of_collacation_points = get_collocatoin_points(vector_of_points, struct_of_cells->number_of_cell);
+        float *vector_of_collocation_points = get_collocation_points(vector_of_points,
+                                                                     struct_of_cells->number_of_cell);
 
         if (WRITE_TO_FILE) {
-            write_result_to_file("collacation_points.dat", vector_of_collacation_points,
+            write_result_to_file("collocation_points.dat", vector_of_collocation_points,
                                  struct_of_cells->number_of_coordinates_at_point,
                                  struct_of_cells->number_of_cell);
         }
