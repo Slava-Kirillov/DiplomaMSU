@@ -12,15 +12,16 @@ int main(int argc, char **argv) {
 
         if (WRITE_TO_FILE) {
             write_result_to_file("sphere.dat", vector_of_points,
-                                 NUMBER_OF_COORDINATES_AT_POINT,
-                                 struct_of_cells->total_number_of_coordinates / NUMBER_OF_COORDINATES_AT_POINT);
+                                 struct_of_cells->number_of_coordinates_at_point,
+                                 struct_of_cells->total_number_of_coordinates /
+                                 struct_of_cells->number_of_coordinates_at_point);
         }
 
         float *vector_of_collacation_points = get_collocatoin_points(vector_of_points, struct_of_cells->number_of_cell);
 
         if (WRITE_TO_FILE) {
             write_result_to_file("collacation_points.dat", vector_of_collacation_points,
-                                 NUMBER_OF_COORDINATES_AT_POINT,
+                                 struct_of_cells->number_of_coordinates_at_point,
                                  struct_of_cells->number_of_cell);
         }
     }

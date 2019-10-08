@@ -9,7 +9,7 @@
 const char *path_to_data_directory = "../resource/data/";
 
 struct Array_of_points {
-    unsigned number_of_cell, total_number_of_coordinates;
+    unsigned number_of_cell, total_number_of_coordinates, number_of_coordinates_at_point;
     float *array;
 };
 
@@ -68,6 +68,7 @@ struct Array_of_points *get_array_of_cells(FILE *file) {
     array_struct->number_of_cell = number_of_cell;
     array_struct->total_number_of_coordinates = total_number_of_points;
     array_struct->array = array_of_points;
+    array_struct->number_of_coordinates_at_point = NUMBER_OF_COORDINATES_AT_POINT;
 
     return array_struct;
 }
