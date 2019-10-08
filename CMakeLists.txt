@@ -3,4 +3,4 @@ project(DiplomaMSU C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(main src/main.c src/secondary_functions.h src/secondary_functions.c)
+add_executable(main src/main.c src/headers/secondary_functions.h src/secondary_functions.c)

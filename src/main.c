@@ -1,4 +1,4 @@
-#include "secondary_functions.h"
+#include "headers/secondary_functions.h"
 
 #define WRITE_TO_FILE 0 //Печать результата в файл
 
