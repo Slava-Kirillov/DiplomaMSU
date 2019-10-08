@@ -5,7 +5,7 @@
 #define NUMBER_OF_COORDINATES_AT_POINT 3 //Количество координат у точки
 #define NUMBER_OF_POINTS_PER_CELL 4 //Количество точек у ячейки
 #define PRINT_READ_DATA 0 //Печть данных, прочитанных из файла
-#define WRITE_TO_FILE 0 //Печать результата в файл
+#define WRITE_TO_FILE 1 //Печать результата в файл
 
 int main(int argc, char **argv) {
 
@@ -16,12 +16,18 @@ int main(int argc, char **argv) {
         float *vector_of_points = struct_of_cells->array;
 
         if (WRITE_TO_FILE) {
-            write_result_to_file("test_array.dat", vector_of_points,
+            write_result_to_file("sphere.dat", vector_of_points,
                                  NUMBER_OF_COORDINATES_AT_POINT,
                                  struct_of_cells->total_number_of_coordinates / NUMBER_OF_COORDINATES_AT_POINT);
         }
 
         float *vector_of_collacation_points = get_collocatoin_points(vector_of_points, struct_of_cells->number_of_cell);
+
+        if (WRITE_TO_FILE) {
+            write_result_to_file("collacation_points.dat", vector_of_collacation_points,
+                                 NUMBER_OF_COORDINATES_AT_POINT,
+                                 struct_of_cells->number_of_cell);
+        }
     }
 
     return 0;
