@@ -1,19 +1,13 @@
 #include <bits/types/FILE.h>
 #include <malloc.h>
 #include <string.h>
+#include "headers/secondary_functions.h"
 
 #define NUMBER_OF_POINTS_PER_CELL 4 //Количество точек у ячейки
 #define PRINT_READ_DATA 0 //Печть данных, прочитанных из файла
 #define NUMBER_OF_COORDINATES_AT_POINT 3 //Количество координат у точки
 
 const char *path_to_data_directory = "../resource/data/";
-
-struct Array_of_points {
-    unsigned number_of_cell,
-            total_number_of_coordinates,
-            number_of_coordinates_at_point;
-    float *array;
-};
 
 void print_array_of_points(float *array, unsigned number_of_cell, unsigned number_of_coordinates_of_cells) {
     int k = 0, i, j;
@@ -26,7 +20,7 @@ void print_array_of_points(float *array, unsigned number_of_cell, unsigned numbe
     }
 }
 
-struct Array_of_points *get_array_of_cells(FILE *file) {
+struct_of_points *get_array_of_cells(FILE *file) {
     unsigned number_of_cell, total_number_of_points, i = 0, j, number_of_coordinates_of_cells, k;
     char line[128], *p;
     float float_line[12], *array_of_points, *pointer_of_array;
@@ -64,7 +58,7 @@ struct Array_of_points *get_array_of_cells(FILE *file) {
         print_array_of_points(array_of_points, number_of_cell, number_of_coordinates_of_cells);
     }
 
-    struct Array_of_points *array_struct = malloc(
+    struct_of_points *array_struct = malloc(
             sizeof(float) * total_number_of_points + sizeof(total_number_of_points) + sizeof(number_of_cell));
 
     array_struct->number_of_cell = number_of_cell;
@@ -124,6 +118,25 @@ float *get_collocation_points(float *array_of_points, unsigned number_of_cells) 
     }
 
     return return_array;
+}
+
+float *get_cell_area(float* array_of_points, unsigned number_of_cells) {
+//    float array_of_cell[number_of_cells][NUMBER_OF_POINTS_PER_CELL][NUMBER_OF_COORDINATES_AT_POINT];
+//    float array_of_cells_area[number_of_cells];
+//
+//    float *pointer_on_points_array = array_of_points;
+//    for (unsigned i = 0; i < number_of_cells; ++i) {
+//        for (unsigned j = 0; j < NUMBER_OF_POINTS_PER_CELL; ++j) {
+//            for (unsigned k = 0; k < NUMBER_OF_COORDINATES_AT_POINT; ++k) {
+//                array_of_cell[i][j][k] = *pointer_on_points_array;
+//                pointer_on_points_array++;
+//            }
+//        }
+//    }
+//
+//    for(int i = 0; i < number_of_cells; ++i){
+//
+//    }
 }
 
 void write_result_to_file(char *filename, float *vector_of_points, int number_of_columns, int number_of_rows) {

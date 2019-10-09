@@ -7,7 +7,7 @@ int main(int argc, char **argv) {
     FILE *file = get_file("sphere_30_50.dat");
 
     if (file != NULL) {
-        struct Array_of_points *struct_of_cells = get_array_of_cells(file);
+        struct_of_points *struct_of_cells = get_array_of_cells(file);
         float *vector_of_points = struct_of_cells->array;
 
         if (WRITE_TO_FILE) {
