@@ -1,6 +1,12 @@
 #ifndef DIPLOMAMSU_READDATA_H
-#define DIPLOMAMSU_READDATA_H
 
+#include <bits/types/FILE.h>
+#include <malloc.h>
+#include <string.h>
+#include <math.h>
+#include <stdlib.h>
+
+#define DIPLOMAMSU_READDATA_H
 #define NUMBER_OF_POINTS_PER_CELL 4U //Количество точек у ячейки
 #define PRINT_READ_DATA 0U //Печть данных, прочитанных из файла
 #define NUMBER_OF_COORDINATES_AT_POINT 3U //Количество координат у точки
@@ -22,13 +28,6 @@
             array_of_collocation_points[i][j] = *(vector_of_collocation_points++); \
         } \
     } \
-
-
-#include <bits/types/FILE.h>
-#include <malloc.h>
-#include <string.h>
-#include <math.h>
-#include <stdlib.h>
 
 typedef struct Array_of_points {
     unsigned number_of_cell,
