@@ -85,20 +85,11 @@ FILE *get_file(char *filename) {
     return file;
 }
 
-float *get_collocation_points(float *array_of_points, int number_of_cells) {
-    int w = 0;
+float *get_collocation_points(float *vector_of_points, int number_of_cells) {
     float coordinate = 0, initial_coordinate = 0;
-    float array_of_cell[number_of_cells][NUMBER_OF_POINTS_PER_CELL][NUMBER_OF_COORDINATES_AT_POINT];
     float array_of_collocation_points[number_of_cells][NUMBER_OF_COORDINATES_AT_POINT];
 
-    for (int i = 0; i < number_of_cells; ++i) {
-        for (int j = 0; j < NUMBER_OF_POINTS_PER_CELL; ++j) {
-            for (int k = 0; k < NUMBER_OF_COORDINATES_AT_POINT; ++k) {
-                array_of_cell[i][j][k] = array_of_points[w++];
-            }
-        }
-    }
-
+    MACROS_GET_ARRAY_CELL(vector_of_points, number_of_cells)
 
     float *return_array = malloc(sizeof(float) * number_of_cells * NUMBER_OF_COORDINATES_AT_POINT);
     float *pointer_to_array = return_array;
@@ -115,6 +106,28 @@ float *get_collocation_points(float *array_of_points, int number_of_cells) {
     }
 
     return return_array;
+}
+
+float *get_array_of_vec_norm(float *vector_of_points, float *vector_of_collocation_points, int number_of_cells) {
+    //get array_of_cell
+    MACROS_GET_ARRAY_CELL(vector_of_points, number_of_cells)
+
+    //get array_of_collocation_points
+    MACROS_GET_ARRAY_COLLOCATION_POINTS(vector_of_collocation_points, number_of_cells)
+
+    for (int i = 0; i < number_of_cells; i++) {
+        float colloc_point[NUMBER_OF_COORDINATES_AT_POINT],
+                a2_point[NUMBER_OF_COORDINATES_AT_POINT],
+                a3_point[NUMBER_OF_COORDINATES_AT_POINT];
+        for (int j = 0; j < NUMBER_OF_COORDINATES_AT_POINT; ++j) {
+            colloc_point[j] = array_of_collocation_points[i][j];
+            a2_point[j] = array_of_cell[i][2][j];
+            a3_point[j] = array_of_cell[i][3][j];
+        }
+
+        //TODO: продолжить
+
+    }
 }
 
 float get_cell_area(float *cell) {
@@ -139,43 +152,39 @@ float get_cell_area(float *cell) {
            sqrtf(1 - powf((scalar_mult_diag1_diag2 / (diag1_length * diag2_length)), 2)) / 2;
 }
 
-float *get_array_of_cell_area(float *array_of_points, int number_of_cells) {
-    int w = 0;
-    float array_of_cell[number_of_cells][NUMBER_OF_POINTS_PER_CELL][NUMBER_OF_COORDINATES_AT_POINT];
+float *get_array_of_cell_area(float *vector_of_points, int number_of_cells) {
     float *array_of_cells_area = malloc(sizeof(float) * number_of_cells);
     float *cell = malloc(sizeof(float) * NUMBER_OF_POINTS_PER_CELL * NUMBER_OF_COORDINATES_AT_POINT);
     double areaSum = 0;
 
-    for (int i = 0; i < number_of_cells; ++i) {
-        for (int j = 0; j < NUMBER_OF_POINTS_PER_CELL; ++j) {
-            for (int k = 0; k < NUMBER_OF_COORDINATES_AT_POINT; ++k) {
-                array_of_cell[i][j][k] = array_of_points[w++];
-            }
-        }
-    }
+    MACROS_GET_ARRAY_CELL(vector_of_points, number_of_cells)
 
     for (int i = 0; i < number_of_cells; ++i) {
-        w = 0;
+        int counter = 0;
         for (int j = 0; j < NUMBER_OF_POINTS_PER_CELL; ++j) {
             for (int k = 0; k < NUMBER_OF_COORDINATES_AT_POINT; ++k) {
-                cell[w++] = array_of_cell[i][j][k];
+                *(cell + counter++) = array_of_cell[i][j][k];
             }
         }
-
         array_of_cells_area[i] = get_cell_area(cell);
         areaSum += array_of_cells_area[i];
     }
-
     return array_of_cells_area;
 }
 
 void write_result_to_file(char *filename, float *vector_of_points, int number_of_columns, int number_of_rows) {
     char *path_to_data_file = malloc(sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
+    memset(path_to_data_file, 0, sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
 
     strcat(path_to_data_file, path_to_data_directory);
     strcat(path_to_data_file, filename);
 
     FILE *file = fopen(path_to_data_file, "w");
+
+    if (file == NULL) {
+        perror(path_to_data_file);
+        exit(EXIT_FAILURE);
+    }
 
     for (int i = 0; i < number_of_rows; ++i) {
         for (int j = 0; j < number_of_columns; ++j) {
