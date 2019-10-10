@@ -1,15 +1,12 @@
 #include <bits/types/FILE.h>
 #include <malloc.h>
 #include <string.h>
+#include <stdlib.h>
 #include "headers/secondary_functions.h"
-
-#define NUMBER_OF_POINTS_PER_CELL 4 //Количество точек у ячейки
-#define PRINT_READ_DATA 0 //Печть данных, прочитанных из файла
-#define NUMBER_OF_COORDINATES_AT_POINT 3 //Количество координат у точки
 
 const char *path_to_data_directory = "../resource/data/";
 
-void print_array_of_points(float *array, unsigned number_of_cell, unsigned number_of_coordinates_of_cells) {
+void print_array_of_points(float *array, int number_of_cell, int number_of_coordinates_of_cells) {
     int k = 0, i, j;
     for (i = 0; i < number_of_cell; ++i) {
         for (j = 0; j < number_of_coordinates_of_cells; ++j) {
@@ -21,7 +18,8 @@ void print_array_of_points(float *array, unsigned number_of_cell, unsigned numbe
 }
 
 struct_of_points *get_array_of_cells(FILE *file) {
-    unsigned number_of_cell, total_number_of_points, i = 0, j, number_of_coordinates_of_cells, k;
+
+    int number_of_cell, total_number_of_points, i = 0, j, number_of_coordinates_of_cells, k;
     char line[128], *p;
     float float_line[12], *array_of_points, *pointer_of_array;
 
@@ -80,24 +78,23 @@ FILE *get_file(char *filename) {
     free(path_to_data_file);
 
     if (file == NULL) {
-        printf("File reading error\n");
-        return NULL;
+        perror("File reading error\n");
+        exit(EXIT_FAILURE);
     }
 
     return file;
 }
 
-float *get_collocation_points(float *array_of_points, unsigned number_of_cells) {
+float *get_collocation_points(float *array_of_points, int number_of_cells) {
+    int w = 0;
     float coordinate = 0, initial_coordinate = 0;
     float array_of_cell[number_of_cells][NUMBER_OF_POINTS_PER_CELL][NUMBER_OF_COORDINATES_AT_POINT];
     float array_of_collocation_points[number_of_cells][NUMBER_OF_COORDINATES_AT_POINT];
 
-    float *pointer_on_points_array = array_of_points;
-    for (unsigned i = 0; i < number_of_cells; ++i) {
-        for (unsigned j = 0; j < NUMBER_OF_POINTS_PER_CELL; ++j) {
-            for (unsigned k = 0; k < NUMBER_OF_COORDINATES_AT_POINT; ++k) {
-                array_of_cell[i][j][k] = *pointer_on_points_array;
-                pointer_on_points_array++;
+    for (int i = 0; i < number_of_cells; ++i) {
+        for (int j = 0; j < NUMBER_OF_POINTS_PER_CELL; ++j) {
+            for (int k = 0; k < NUMBER_OF_COORDINATES_AT_POINT; ++k) {
+                array_of_cell[i][j][k] = array_of_points[w++];
             }
         }
     }
@@ -105,9 +102,9 @@ float *get_collocation_points(float *array_of_points, unsigned number_of_cells) 
 
     float *return_array = malloc(sizeof(float) * number_of_cells * NUMBER_OF_COORDINATES_AT_POINT);
     float *pointer_to_array = return_array;
-    for (unsigned i = 0; i < number_of_cells; ++i) {
-        for (unsigned j = 0; j < NUMBER_OF_COORDINATES_AT_POINT; ++j) {
-            for (unsigned k = 0; k < NUMBER_OF_POINTS_PER_CELL; ++k) {
+    for (int i = 0; i < number_of_cells; ++i) {
+        for (int j = 0; j < NUMBER_OF_COORDINATES_AT_POINT; ++j) {
+            for (int k = 0; k < NUMBER_OF_POINTS_PER_CELL; ++k) {
                 coordinate = coordinate + array_of_cell[i][k][j];
             }
             *pointer_to_array = coordinate / 4;
@@ -120,23 +117,56 @@ float *get_collocation_points(float *array_of_points, unsigned number_of_cells) 
     return return_array;
 }
 
-float *get_cell_area(float* array_of_points, unsigned number_of_cells) {
-//    float array_of_cell[number_of_cells][NUMBER_OF_POINTS_PER_CELL][NUMBER_OF_COORDINATES_AT_POINT];
-//    float array_of_cells_area[number_of_cells];
-//
-//    float *pointer_on_points_array = array_of_points;
-//    for (unsigned i = 0; i < number_of_cells; ++i) {
-//        for (unsigned j = 0; j < NUMBER_OF_POINTS_PER_CELL; ++j) {
-//            for (unsigned k = 0; k < NUMBER_OF_COORDINATES_AT_POINT; ++k) {
-//                array_of_cell[i][j][k] = *pointer_on_points_array;
-//                pointer_on_points_array++;
-//            }
-//        }
-//    }
-//
-//    for(int i = 0; i < number_of_cells; ++i){
-//
-//    }
+float get_cell_area(float *cell) {
+    float diag1[NUMBER_OF_COORDINATES_AT_POINT], diag2[NUMBER_OF_COORDINATES_AT_POINT];
+    int i = 0, j = 0;
+
+    j = (NUMBER_OF_COORDINATES_AT_POINT * NUMBER_OF_POINTS_PER_CELL) / 2;
+
+    diag1[0] = *(cell + i++) - *(cell + j++);
+    diag1[1] = *(cell + i++) - *(cell + j++);
+    diag1[2] = *(cell + i++) - *(cell + j++);
+
+    diag2[0] = *(cell + i++) - *(cell + j++);
+    diag2[1] = *(cell + i++) - *(cell + j++);
+    diag2[2] = *(cell + i) - *(cell + j);
+
+    float diag1_length = sqrtf(diag1[0] * diag1[0] + diag1[1] * diag1[1] + diag1[2] * diag1[2]);
+    float diag2_length = sqrtf(diag2[0] * diag2[0] + diag2[1] * diag2[1] + diag2[2] * diag2[2]);
+    float scalar_mult_diag1_diag2 = diag1[0] * diag2[0] + diag1[1] * diag2[1] + diag1[2] * diag2[2];
+    return diag1_length *
+           diag2_length *
+           sqrtf(1 - powf((scalar_mult_diag1_diag2 / (diag1_length * diag2_length)), 2)) / 2;
+}
+
+float *get_array_of_cell_area(float *array_of_points, int number_of_cells) {
+    int w = 0;
+    float array_of_cell[number_of_cells][NUMBER_OF_POINTS_PER_CELL][NUMBER_OF_COORDINATES_AT_POINT];
+    float *array_of_cells_area = malloc(sizeof(float) * number_of_cells);
+    float *cell = malloc(sizeof(float) * NUMBER_OF_POINTS_PER_CELL * NUMBER_OF_COORDINATES_AT_POINT);
+    double areaSum = 0;
+
+    for (int i = 0; i < number_of_cells; ++i) {
+        for (int j = 0; j < NUMBER_OF_POINTS_PER_CELL; ++j) {
+            for (int k = 0; k < NUMBER_OF_COORDINATES_AT_POINT; ++k) {
+                array_of_cell[i][j][k] = array_of_points[w++];
+            }
+        }
+    }
+
+    for (int i = 0; i < number_of_cells; ++i) {
+        w = 0;
+        for (int j = 0; j < NUMBER_OF_POINTS_PER_CELL; ++j) {
+            for (int k = 0; k < NUMBER_OF_COORDINATES_AT_POINT; ++k) {
+                cell[w++] = array_of_cell[i][j][k];
+            }
+        }
+
+        array_of_cells_area[i] = get_cell_area(cell);
+        areaSum += array_of_cells_area[i];
+    }
+
+    return array_of_cells_area;
 }
 
 void write_result_to_file(char *filename, float *vector_of_points, int number_of_columns, int number_of_rows) {
