@@ -2,3 +2,5 @@
 cmake-build-debug
 resource/data/collocation_points.dat
 resource/data/sphere.dat
+resource/data/cell_area.dat
+resource/data/normal_vectors.dat

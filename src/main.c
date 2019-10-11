@@ -5,7 +5,7 @@
 #define RESET "\x1B[0m"
 #define RED   "\x1B[31m"
 
-void print_figure_area(float* vector_of_cell_area, int number_of_cell);
+void print_figure_area(float *vector_of_cell_area, int number_of_cell);
 
 int main(int argc, char **argv) {
 
@@ -20,8 +20,9 @@ int main(int argc, char **argv) {
     int number_of_cell = struct_of_cells->number_of_cell;
 
     float *vector_of_points = struct_of_cells->array;
-    float *vector_of_collocation_points = get_collocation_points(vector_of_points,number_of_cell);
+    float *vector_of_collocation_points = get_collocation_points(vector_of_points, number_of_cell);
     float *vector_of_cell_area = get_array_of_cell_area(vector_of_points, number_of_cell);
+    float *vector_of_normals = get_array_of_vec_norm(vector_of_points, vector_of_cell_area, number_of_cell);
 
     print_figure_area(vector_of_cell_area, number_of_cell);
 
@@ -33,12 +34,17 @@ int main(int argc, char **argv) {
                              struct_of_cells->number_of_coordinates_at_point,
                              struct_of_cells->total_number_of_coordinates /
                              struct_of_cells->number_of_coordinates_at_point);
+        write_result_to_file("cell_area.dat", vector_of_cell_area,
+                             1, struct_of_cells->number_of_cell);
+        write_result_to_file("normal_vectors.dat", vector_of_normals,
+                             struct_of_cells->number_of_coordinates_at_point,
+                             struct_of_cells->number_of_cell);
     }
 
     return 0;
 }
 
-void print_figure_area(float* vector_of_cell_area, int number_of_cell){
+void print_figure_area(float *vector_of_cell_area, int number_of_cell) {
     float area = 0;
     for (int i = 0; i < number_of_cell; ++i) {
         area += *vector_of_cell_area;

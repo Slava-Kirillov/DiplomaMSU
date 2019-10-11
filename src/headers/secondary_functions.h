@@ -21,16 +21,16 @@
         } \
      } \
 
-#define MACROS_GET_ARRAY_COLLOCATION_POINTS(vector_of_collocation_points, number_of_cells) \
-    float array_of_collocation_points[number_of_cells][NUMBER_OF_COORDINATES_AT_POINT]; \
-    for (int i = 0; i < number_of_cells; i++) { \
-        for (int j = 0; j < NUMBER_OF_COORDINATES_AT_POINT; j++) { \
-            array_of_collocation_points[i][j] = *(vector_of_collocation_points++); \
-        } \
-    } \
+//#define MACROS_GET_ARRAY_COLLOCATION_POINTS(vector_of_collocation_points, number_of_cells) \
+//    float array_of_collocation_points[number_of_cells][NUMBER_OF_COORDINATES_AT_POINT]; \
+//    for (int i = 0; i < number_of_cells; i++) { \
+//        for (int j = 0; j < NUMBER_OF_COORDINATES_AT_POINT; j++) { \
+//            array_of_collocation_points[i][j] = *(vector_of_collocation_points++); \
+//        } \
+//    } \
 
 typedef struct Array_of_points {
-    unsigned number_of_cell,
+    int number_of_cell,
             total_number_of_coordinates,
             number_of_coordinates_at_point;
     float *array;
@@ -47,5 +47,7 @@ float *get_collocation_points(float *array_of_points, int number_of_cells);
 void write_result_to_file(char *filename, float *vector_of_points, int number_of_columns, int number_of_rows);
 
 float *get_array_of_cell_area(float *vector_of_points, int number_of_cells);
+
+float *get_array_of_vec_norm(float *vector_of_points, float *vector_of_cell_area, int number_of_cells);
 
 #endif
