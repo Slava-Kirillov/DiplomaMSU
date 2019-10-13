@@ -36,6 +36,12 @@ typedef struct Array_of_points {
     float *array;
 } struct_of_points;
 
+typedef struct Vectors_in_cells {
+    float *normals;
+    float *tau1;
+    float *tau2;
+} vectors_in_cells;
+
 FILE *get_file(char *filename);
 
 struct_of_points *get_array_of_cells(FILE *file);
@@ -48,6 +54,6 @@ void write_result_to_file(char *filename, float *vector_of_points, int number_of
 
 float *get_array_of_cell_area(float *vector_of_points, int number_of_cells);
 
-float *get_array_of_vec_norm(float *vector_of_points, float *vector_of_cell_area, int number_of_cells);
+vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells);
 
 #endif

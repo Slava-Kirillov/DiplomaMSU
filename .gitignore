@@ -4,3 +4,5 @@ resource/data/collocation_points.dat
 resource/data/sphere.dat
 resource/data/cell_area.dat
 resource/data/normal_vectors.dat
+resource/data/tau1_vectors.dat
+resource/data/tau2_vectors.dat

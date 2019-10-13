@@ -115,35 +115,61 @@ float *get_collocation_points(float *vector_of_points, int number_of_cells) {
     return return_array;
 }
 
-float* get_vec_multip(float* vector_1, float* vector_2){
-    float* vec_multip = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
+float *get_vec_multip(float *vector_1, float *vector_2) {
+    float *vec_multip = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
     vec_multip[0] = vector_1[1] * vector_2[2] - vector_1[2] * vector_2[1];
-    vec_multip[1] = vector_1[0] * vector_2[2] - vector_1[2] * vector_2[0];
-    vec_multip[2] = vector_1[1] * vector_2[0] - vector_1[0] * vector_2[1];
+    vec_multip[1] = vector_1[2] * vector_2[0] - vector_1[0] * vector_2[2];
+    vec_multip[2] = vector_1[0] * vector_2[1] - vector_1[1] * vector_2[0];
     return vec_multip;
 }
 
-float *get_array_of_vec_norm(float *vector_of_points, float *vector_of_cell_area, int number_of_cells) {
+float get_vector_norma(float *vector){
+    return sqrtf(powf(vector[0], 2) + powf(vector[1], 2) + powf(vector[2], 2));
+}
+
+vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells) {
     //    get array_of_cell
-    MACROS_GET_ARRAY_CELL(vector_of_points, number_of_cells)
+//    MACROS_GET_ARRAY_CELL(vector_of_points, number_of_cells)
 
-    float* vector_of__normal = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
+    vectors_in_cells *vectors = malloc(sizeof(vectors_in_cells));
+    float* normal = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
+    float* tau1 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
+    float* tau2 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
 
-    int counter = 0;
+
+    int counter1 = 0, counter2 = 0, counter3 = 0;
     for (int i = 0; i < number_of_cells; ++i) {
-        diag* diagonals = get_diag_of_cell(&array_of_cell[i][0][0]);
-        float* vec_multip = get_vec_multip(diagonals->diag1, diagonals->diag2);
-        float cell_area = vector_of_cell_area[i];
-        vector_of__normal[counter++] = vec_multip[0] / (2 * cell_area);
-        vector_of__normal[counter++] = vec_multip[1] / (2 * cell_area);
-        vector_of__normal[counter++] = vec_multip[2] / (2 * cell_area);
+        diag *diagonals = get_diag_of_cell(&vector_of_points[counter3]);
+        counter3 += NUMBER_OF_COORDINATES_AT_POINT*NUMBER_OF_POINTS_PER_CELL;
+
+        float *vec_multip = get_vec_multip(diagonals->diag1, diagonals->diag2);
+        float vec_multip_norma = get_vector_norma(vec_multip);
+        float diag1_norma = get_vector_norma(diagonals->diag1);
+
+        normal[counter1] = vec_multip[0] / vec_multip_norma;
+        tau1[counter1++] = diagonals->diag1[0]/diag1_norma;
+
+        normal[counter1] = vec_multip[1] / vec_multip_norma;
+        tau1[counter1++] = diagonals->diag1[1]/diag1_norma;
+
+        normal[counter1] = vec_multip[2] / vec_multip_norma;
+        tau1[counter1++] = diagonals->diag1[1]/diag1_norma;
+
+        vec_multip = get_vec_multip(&normal[counter2], &tau1[counter2]);
+        tau2[counter2++] = vec_multip[0];
+        tau2[counter2++] = vec_multip[1];
+        tau2[counter2++] = vec_multip[2];
     }
-    return vector_of__normal;
+    vectors->normals = normal;
+    vectors->tau1 = tau1;
+    vectors->tau2 = tau2;
+
+    return vectors;
 }
 
 diag *get_diag_of_cell(float *cell) {
-    float* diag1 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
-    float* diag2 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
+    float *diag1 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
+    float *diag2 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
     int i = 0, j = 0;
 
     j = (NUMBER_OF_COORDINATES_AT_POINT * NUMBER_OF_POINTS_PER_CELL) / 2;
