@@ -212,7 +212,7 @@ vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells)
 diag *get_diag_of_cell(float *cell) {
     float *diag1 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
     float *diag2 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
-    diag *diagonals = malloc(sizeof(float) * sizeof(diag));
+    diag *diagonals = malloc(sizeof(diag));
 
     int i = 0, j = 0;
 
