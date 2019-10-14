@@ -27,8 +27,6 @@ int main(int argc, char **argv) {
     float *vector_of_cell_area = get_array_of_cell_area(vector_of_points, number_of_cell);
     vectors_in_cells *vectors = get_array_of_vec(vector_of_points, number_of_cell);
 
-    print_figure_area(vector_of_cell_area, number_of_cell);
-
     if (WRITE_TO_FILE) {
         write_result_to_file("collocation_points.dat", vector_of_collocation_points,
                              struct_of_cells->number_of_coordinates_at_point,
@@ -49,6 +47,7 @@ int main(int argc, char **argv) {
                              struct_of_cells->number_of_coordinates_at_point,
                              struct_of_cells->number_of_cell);
     }
+    print_figure_area(vector_of_cell_area, number_of_cell);
 
     return 0;
 }

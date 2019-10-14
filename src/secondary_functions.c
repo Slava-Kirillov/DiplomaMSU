@@ -307,4 +307,3 @@ void write_result_to_file(char *filename, float *vector_of_points, int number_of
 
     fclose(file);
 }
-
