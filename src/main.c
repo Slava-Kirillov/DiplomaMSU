@@ -17,6 +17,9 @@ int main(int argc, char **argv) {
     FILE *file = get_file("sphere_30_50.dat");
 
     struct_of_points *struct_of_cells = get_array_of_cells(file);
+
+    fclose(file);
+
     int number_of_cell = struct_of_cells->number_of_cell;
 
     float *vector_of_points = struct_of_cells->array;

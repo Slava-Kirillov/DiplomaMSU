@@ -13,6 +13,12 @@ typedef struct Diag_of_cell {
 
 diag *get_diag_of_cell(float *cell);
 
+/**
+ * Печать массива ячеек в терминал
+ * @param array
+ * @param number_of_cell
+ * @param number_of_coordinates_of_cells
+ */
 void print_array_of_points(float *array, int number_of_cell, int number_of_coordinates_of_cells) {
     int k = 0, i, j;
     for (i = 0; i < number_of_cell; ++i) {
@@ -24,6 +30,11 @@ void print_array_of_points(float *array, int number_of_cell, int number_of_coord
     }
 }
 
+/**
+ * Получить структуру с массивом ячеек разбиения
+ * @param file
+ * @return
+ */
 struct_of_points *get_array_of_cells(FILE *file) {
 
     int number_of_cell, total_number_of_points, i = 0, j, number_of_coordinates_of_cells, k;
@@ -74,6 +85,11 @@ struct_of_points *get_array_of_cells(FILE *file) {
     return array_struct;
 }
 
+/**
+ * Открыть файл для чтения
+ * @param filename
+ * @return
+ */
 FILE *get_file(char *filename) {
     char *path_to_data_file = malloc(sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
 
@@ -92,6 +108,12 @@ FILE *get_file(char *filename) {
     return file;
 }
 
+/**
+ * Получить точки коллокации
+ * @param vector_of_points
+ * @param number_of_cells
+ * @return
+ */
 float *get_collocation_points(float *vector_of_points, int number_of_cells) {
     float coordinate = 0, initial_coordinate = 0;
     float array_of_collocation_points[number_of_cells][NUMBER_OF_COORDINATES_AT_POINT];
@@ -115,6 +137,13 @@ float *get_collocation_points(float *vector_of_points, int number_of_cells) {
     return return_array;
 }
 
+
+/**
+ * Получить векторное произведение двух векторов
+ * @param vector_1
+ * @param vector_2
+ * @return
+ */
 float *get_vec_multip(float *vector_1, float *vector_2) {
     float *vec_multip = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
     vec_multip[0] = vector_1[1] * vector_2[2] - vector_1[2] * vector_2[1];
@@ -123,14 +152,22 @@ float *get_vec_multip(float *vector_1, float *vector_2) {
     return vec_multip;
 }
 
+/**
+ * Получить норму вектора
+ * @param vector
+ * @return
+ */
 float get_vector_norma(float *vector){
     return sqrtf(powf(vector[0], 2) + powf(vector[1], 2) + powf(vector[2], 2));
 }
 
+/**
+ * Для каждой ячейки получить нормаль n и касательные векторы tau1 и tau2
+ * @param vector_of_points
+ * @param number_of_cells
+ * @return
+ */
 vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells) {
-    //    get array_of_cell
-//    MACROS_GET_ARRAY_CELL(vector_of_points, number_of_cells)
-
     vectors_in_cells *vectors = malloc(sizeof(vectors_in_cells));
     float* normal = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
     float* tau1 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
@@ -153,7 +190,7 @@ vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells)
         tau1[counter1++] = diagonals->diag1[1]/diag1_norma;
 
         normal[counter1] = vec_multip[2] / vec_multip_norma;
-        tau1[counter1++] = diagonals->diag1[1]/diag1_norma;
+        tau1[counter1++] = diagonals->diag1[2]/diag1_norma;
 
         vec_multip = get_vec_multip(&normal[counter2], &tau1[counter2]);
         tau2[counter2++] = vec_multip[0];
@@ -167,9 +204,16 @@ vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells)
     return vectors;
 }
 
+/**
+ * Получить диагонали ячейки разбиения
+ * @param cell
+ * @return
+ */
 diag *get_diag_of_cell(float *cell) {
     float *diag1 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
     float *diag2 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
+    diag *diagonals = malloc(sizeof(float) * sizeof(diag));
+
     int i = 0, j = 0;
 
     j = (NUMBER_OF_COORDINATES_AT_POINT * NUMBER_OF_POINTS_PER_CELL) / 2;
@@ -182,12 +226,16 @@ diag *get_diag_of_cell(float *cell) {
     diag2[1] = *(cell + i++) - *(cell + j++);
     diag2[2] = *(cell + i) - *(cell + j);
 
-    diag *diagonals = malloc(sizeof(float) * sizeof(diag));
     diagonals->diag1 = diag1;
     diagonals->diag2 = diag2;
     return diagonals;
 }
 
+/**
+ * Получить площадь ячейки
+ * @param cell
+ * @return
+ */
 float get_cell_area(float *cell) {
     diag *diagonals = get_diag_of_cell(cell);
     float *diag1 = diagonals->diag1;
@@ -201,6 +249,12 @@ float get_cell_area(float *cell) {
            sqrtf(1 - powf((scalar_mult_diag1_diag2 / (diag1_length * diag2_length)), 2)) / 2;
 }
 
+/**
+ * Получить массив площадей ячеек
+ * @param vector_of_points
+ * @param number_of_cells
+ * @return
+ */
 float *get_array_of_cell_area(float *vector_of_points, int number_of_cells) {
     float *array_of_cells_area = malloc(sizeof(float) * number_of_cells);
     float *cell = malloc(sizeof(float) * NUMBER_OF_POINTS_PER_CELL * NUMBER_OF_COORDINATES_AT_POINT);
@@ -221,6 +275,14 @@ float *get_array_of_cell_area(float *vector_of_points, int number_of_cells) {
     return array_of_cells_area;
 }
 
+
+/**
+ * Печать результата в файл
+ * @param filename
+ * @param vector_of_points
+ * @param number_of_columns
+ * @param number_of_rows
+ */
 void write_result_to_file(char *filename, float *vector_of_points, int number_of_columns, int number_of_rows) {
     char *path_to_data_file = malloc(sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
     memset(path_to_data_file, 0, sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
