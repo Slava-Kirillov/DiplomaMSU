@@ -3,5 +3,5 @@ project(DiplomaMSU)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(main src/main.c src/headers/secondary_functions.h src/secondary_functions.c)
+add_executable(main src/main.c src/headers/read_write_print.h src/read_write_print.c src/headers/data_gen.h src/data_gen.c)
 target_link_libraries(main m)

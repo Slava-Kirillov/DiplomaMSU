@@ -1,9 +1,7 @@
-#include "headers/secondary_functions.h"
+#include "headers/read_write_print.h"
+#include "headers/data_gen.h"
 
 #define WRITE_TO_FILE 1 //Печать результата в файл
-#define GRN   "\x1B[32m"
-#define RESET "\x1B[0m"
-#define RED   "\x1B[31m"
 
 void print_figure_area(float *vector_of_cell_area, int number_of_cell);
 
@@ -50,16 +48,4 @@ int main(int argc, char **argv) {
     print_figure_area(vector_of_cell_area, number_of_cell);
 
     return 0;
-}
-
-void print_figure_area(float *vector_of_cell_area, int number_of_cell) {
-    float area = 0;
-    for (int i = 0; i < number_of_cell; ++i) {
-        area += *vector_of_cell_area;
-        vector_of_cell_area++;
-    }
-
-    printf(GRN "Площадь фигуры по данным из файла: " RED "%f\n", area);
-    printf(GRN "Площадь фигуры по формуле S = 4*Pi*R: " RED "%f\n", M_PI * 4);
-    printf(GRN "Разность: " RED "%f" RESET, fabsf(area - M_PI * 4));
 }

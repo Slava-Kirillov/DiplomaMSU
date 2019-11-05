@@ -1,10 +1,5 @@
-#include <bits/types/FILE.h>
-#include <malloc.h>
-#include <string.h>
-#include <stdlib.h>
-#include "headers/secondary_functions.h"
-
-const char *path_to_data_directory = "../resource/data/";
+#include "headers/data_gen.h"
+#include "headers/read_write_print.h"
 
 typedef struct Diag_of_cell {
     float *diag1;
@@ -12,23 +7,6 @@ typedef struct Diag_of_cell {
 } diag;
 
 diag *get_diag_of_cell(float *cell);
-
-/**
- * Печать массива ячеек в терминал
- * @param array
- * @param number_of_cell
- * @param number_of_coordinates_of_cells
- */
-void print_array_of_points(float *array, int number_of_cell, int number_of_coordinates_of_cells) {
-    int k = 0, i, j;
-    for (i = 0; i < number_of_cell; ++i) {
-        for (j = 0; j < number_of_coordinates_of_cells; ++j) {
-            printf("%f ", array[k]);
-            ++k;
-        }
-        printf("%s", "\n");
-    }
-}
 
 /**
  * Получить структуру с массивом ячеек разбиения
@@ -83,29 +61,6 @@ struct_of_points *get_array_of_cells(FILE *file) {
     array_struct->number_of_coordinates_at_point = NUMBER_OF_COORDINATES_AT_POINT;
 
     return array_struct;
-}
-
-/**
- * Открыть файл для чтения
- * @param filename
- * @return
- */
-FILE *get_file(char *filename) {
-    char *path_to_data_file = malloc(sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
-
-    strcat(path_to_data_file, path_to_data_directory);
-    strcat(path_to_data_file, filename);
-
-    FILE *file = fopen(path_to_data_file, "r");
-
-    free(path_to_data_file);
-
-    if (file == NULL) {
-        perror("File reading error\n");
-        exit(EXIT_FAILURE);
-    }
-
-    return file;
 }
 
 /**
@@ -273,37 +228,4 @@ float *get_array_of_cell_area(float *vector_of_points, int number_of_cells) {
         areaSum += array_of_cells_area[i];
     }
     return array_of_cells_area;
-}
-
-
-/**
- * Печать результата в файл
- * @param filename
- * @param vector_of_points
- * @param number_of_columns
- * @param number_of_rows
- */
-void write_result_to_file(char *filename, float *vector_of_points, int number_of_columns, int number_of_rows) {
-    char *path_to_data_file = malloc(sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
-    memset(path_to_data_file, 0, sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
-
-    strcat(path_to_data_file, path_to_data_directory);
-    strcat(path_to_data_file, filename);
-
-    FILE *file = fopen(path_to_data_file, "w");
-
-    if (file == NULL) {
-        perror(path_to_data_file);
-        exit(EXIT_FAILURE);
-    }
-
-    for (int i = 0; i < number_of_rows; ++i) {
-        for (int j = 0; j < number_of_columns; ++j) {
-            fprintf(file, "%f ", *vector_of_points);
-            vector_of_points++;
-        }
-        fprintf(file, "%s", "\n");
-    }
-
-    fclose(file);
 }
