@@ -13,7 +13,7 @@ diag *get_diag_of_cell(float *cell);
  * @param file
  * @return
  */
-struct_of_points *get_array_of_cells(FILE *file) {
+struct_of_points *get_array_of_points(FILE *file) {
 
     int number_of_cell, total_number_of_points, i = 0, j, number_of_coordinates_of_cells, k;
     char line[128], *p;

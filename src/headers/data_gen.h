@@ -40,6 +40,6 @@ vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells)
 
 float *get_collocation_points(float *array_of_points, int number_of_cells);
 
-struct_of_points *get_array_of_cells(FILE *file);
+struct_of_points *get_array_of_points(FILE *file);
 
 #endif
