@@ -1,5 +1,6 @@
 #include "headers/read_write_print.h"
 #include "headers/data_gen.h"
+#include "headers/computation_service.h"
 
 #define WRITE_TO_FILE 0 //Печать результата в файл
 
@@ -54,6 +55,7 @@ int main(int argc, char **argv) {
         perror("Number of points per cell is not even");
         exit(EXIT_FAILURE);
     }
+
 
     // открываем файл для чтения
     FILE *file = get_file("sphere_30_50.dat");
