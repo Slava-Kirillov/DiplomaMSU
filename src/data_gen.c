@@ -1,5 +1,5 @@
-#include "headers/data_gen.h"
-#include "headers/read_write_print.h"
+#include "include/data_gen.h"
+#include "include/read_write_print.h"
 
 typedef struct Diag_of_cell {
     float *diag1;

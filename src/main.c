@@ -1,6 +1,6 @@
-#include "headers/read_write_print.h"
-#include "headers/data_gen.h"
-#include "headers/computation_service.h"
+#include "include/read_write_print.h"
+#include "include/data_gen.h"
+#include "include/computation_service.h"
 
 #define WRITE_TO_FILE 0 //Печать результата в файл
 
