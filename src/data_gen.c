@@ -1,12 +1,13 @@
 #include "include/data_gen.h"
 #include "include/read_write_print.h"
 
+
 typedef struct Diag_of_cell {
-    float *diag1;
-    float *diag2;
+    double *diag1;
+    double *diag2;
 } diag;
 
-diag *get_diag_of_cell(float *cell);
+diag *get_diag_of_cell(const double *cell);
 
 /**
  * Получить структуру с массивом ячеек разбиения
@@ -17,10 +18,10 @@ struct_of_points *get_array_of_points(FILE *file) {
 
     int number_of_cell, total_number_of_points, i = 0, j, number_of_coordinates_of_cells, k;
     char line[128], *p;
-    float float_line[12], *array_of_points, *pointer_of_array;
+    double float_line[12], *array_of_points, *pointer_of_array;
 
     number_of_coordinates_of_cells = NUMBER_OF_COORDINATES_AT_POINT * NUMBER_OF_POINTS_PER_CELL;
-    array_of_points = malloc(sizeof(float) * number_of_coordinates_of_cells);
+    array_of_points = malloc(sizeof(double) * number_of_coordinates_of_cells);
     pointer_of_array = array_of_points;
     k = 0;
     while (!feof(file)) {
@@ -30,7 +31,7 @@ struct_of_points *get_array_of_points(FILE *file) {
                 if (p == NULL || !strcmp(p, "\n")) {
                     break;
                 }
-                sscanf(p, "%f", &float_line[i]);
+                sscanf(p, "%lf", &float_line[i]);
                 p = strtok(NULL, " ");
 
                 if (i == 11) {
@@ -38,7 +39,7 @@ struct_of_points *get_array_of_points(FILE *file) {
                         pointer_of_array[j] = float_line[j];
                     }
                     k += 12;
-                    array_of_points = realloc(array_of_points, sizeof(float) * (k + number_of_coordinates_of_cells));
+                    array_of_points = realloc(array_of_points, sizeof(double) * (k + number_of_coordinates_of_cells));
                     pointer_of_array = array_of_points + k;
                 }
             }
@@ -53,7 +54,7 @@ struct_of_points *get_array_of_points(FILE *file) {
     }
 
     struct_of_points *array_struct = malloc(
-            sizeof(float) * total_number_of_points + sizeof(total_number_of_points) + sizeof(number_of_cell));
+            sizeof(double) * total_number_of_points + sizeof(total_number_of_points) + sizeof(number_of_cell));
 
     array_struct->number_of_cell = number_of_cell;
     array_struct->total_number_of_coordinates = total_number_of_points;
@@ -69,14 +70,14 @@ struct_of_points *get_array_of_points(FILE *file) {
  * @param number_of_cells
  * @return
  */
-float *get_collocation_points(float *vector_of_points, int number_of_cells) {
-    float coordinate = 0, initial_coordinate = 0;
-    float array_of_collocation_points[number_of_cells][NUMBER_OF_COORDINATES_AT_POINT];
+double *get_collocation_points(double *vector_of_points, int number_of_cells) {
+    double coordinate = 0, initial_coordinate = 0;
+    double array_of_collocation_points[number_of_cells][NUMBER_OF_COORDINATES_AT_POINT];
 
     MACROS_GET_ARRAY_CELL(vector_of_points, number_of_cells)
 
-    float *return_array = malloc(sizeof(float) * number_of_cells * NUMBER_OF_COORDINATES_AT_POINT);
-    float *pointer_to_array = return_array;
+    double *return_array = malloc(sizeof(double) * number_of_cells * NUMBER_OF_COORDINATES_AT_POINT);
+    double *pointer_to_array = return_array;
     for (int i = 0; i < number_of_cells; ++i) {
         for (int j = 0; j < NUMBER_OF_COORDINATES_AT_POINT; ++j) {
             for (int k = 0; k < NUMBER_OF_POINTS_PER_CELL; ++k) {
@@ -99,8 +100,8 @@ float *get_collocation_points(float *vector_of_points, int number_of_cells) {
  * @param vector_2
  * @return
  */
-float *get_vec_multip(float *vector_1, float *vector_2) {
-    float *vec_multip = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
+double *get_vec_multip(double *vector_1, double *vector_2) {
+    double *vec_multip = malloc(sizeof(double) * NUMBER_OF_COORDINATES_AT_POINT);
     vec_multip[0] = vector_1[1] * vector_2[2] - vector_1[2] * vector_2[1];
     vec_multip[1] = vector_1[2] * vector_2[0] - vector_1[0] * vector_2[2];
     vec_multip[2] = vector_1[0] * vector_2[1] - vector_1[1] * vector_2[0];
@@ -112,8 +113,8 @@ float *get_vec_multip(float *vector_1, float *vector_2) {
  * @param vector
  * @return
  */
-float get_vector_norma(float *vector){
-    return sqrtf(powf(vector[0], 2) + powf(vector[1], 2) + powf(vector[2], 2));
+double get_vector_norma(double *vector){
+    return sqrt(pow(vector[0], 2) + pow(vector[1], 2) + pow(vector[2], 2));
 }
 
 /**
@@ -122,11 +123,11 @@ float get_vector_norma(float *vector){
  * @param number_of_cells
  * @return
  */
-vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells) {
+vectors_in_cells *get_array_of_vec(double *vector_of_points, int number_of_cells) {
     vectors_in_cells *vectors = malloc(sizeof(vectors_in_cells));
-    float* normal = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
-    float* tau1 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
-    float* tau2 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
+    double* normal = malloc(sizeof(double) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
+    double* tau1 = malloc(sizeof(double) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
+    double* tau2 = malloc(sizeof(double) * NUMBER_OF_COORDINATES_AT_POINT * number_of_cells);
 
 
     int counter1 = 0, counter2 = 0, counter3 = 0;
@@ -134,9 +135,9 @@ vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells)
         diag *diagonals = get_diag_of_cell(&vector_of_points[counter3]);
         counter3 += NUMBER_OF_COORDINATES_AT_POINT*NUMBER_OF_POINTS_PER_CELL;
 
-        float *vec_multip = get_vec_multip(diagonals->diag1, diagonals->diag2);
-        float vec_multip_norma = get_vector_norma(vec_multip);
-        float diag1_norma = get_vector_norma(diagonals->diag1);
+        double *vec_multip = get_vec_multip(diagonals->diag1, diagonals->diag2);
+        double vec_multip_norma = get_vector_norma(vec_multip);
+        double diag1_norma = get_vector_norma(diagonals->diag1);
 
         normal[counter1] = vec_multip[0] / vec_multip_norma;
         tau1[counter1++] = diagonals->diag1[0]/diag1_norma;
@@ -164,9 +165,9 @@ vectors_in_cells *get_array_of_vec(float *vector_of_points, int number_of_cells)
  * @param cell
  * @return
  */
-diag *get_diag_of_cell(float *cell) {
-    float *diag1 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
-    float *diag2 = malloc(sizeof(float) * NUMBER_OF_COORDINATES_AT_POINT);
+diag *get_diag_of_cell(const double *cell) {
+    double *diag1 = malloc(sizeof(double) * NUMBER_OF_COORDINATES_AT_POINT);
+    double *diag2 = malloc(sizeof(double) * NUMBER_OF_COORDINATES_AT_POINT);
     diag *diagonals = malloc(sizeof(diag));
 
     int i = 0, j = 0;
@@ -191,17 +192,17 @@ diag *get_diag_of_cell(float *cell) {
  * @param cell
  * @return
  */
-float get_cell_area(float *cell) {
+double get_cell_area(double *cell) {
     diag *diagonals = get_diag_of_cell(cell);
-    float *diag1 = diagonals->diag1;
-    float *diag2 = diagonals->diag2;
+    double *diag1 = diagonals->diag1;
+    double *diag2 = diagonals->diag2;
 
-    float diag1_length = sqrtf(diag1[0] * diag1[0] + diag1[1] * diag1[1] + diag1[2] * diag1[2]);
-    float diag2_length = sqrtf(diag2[0] * diag2[0] + diag2[1] * diag2[1] + diag2[2] * diag2[2]);
-    float scalar_mult_diag1_diag2 = diag1[0] * diag2[0] + diag1[1] * diag2[1] + diag1[2] * diag2[2];
+    double diag1_length = sqrt(diag1[0] * diag1[0] + diag1[1] * diag1[1] + diag1[2] * diag1[2]);
+    double diag2_length = sqrt(diag2[0] * diag2[0] + diag2[1] * diag2[1] + diag2[2] * diag2[2]);
+    double scalar_mult_diag1_diag2 = diag1[0] * diag2[0] + diag1[1] * diag2[1] + diag1[2] * diag2[2];
     return diag1_length *
            diag2_length *
-           sqrtf(1 - powf((scalar_mult_diag1_diag2 / (diag1_length * diag2_length)), 2)) / 2;
+           sqrtf(1 - pow((scalar_mult_diag1_diag2 / (diag1_length * diag2_length)), 2)) / 2;
 }
 
 /**
@@ -210,9 +211,9 @@ float get_cell_area(float *cell) {
  * @param number_of_cells
  * @return
  */
-float *get_array_of_cell_area(float *vector_of_points, int number_of_cells) {
-    float *array_of_cells_area = malloc(sizeof(float) * number_of_cells);
-    float *cell = malloc(sizeof(float) * NUMBER_OF_POINTS_PER_CELL * NUMBER_OF_COORDINATES_AT_POINT);
+double *get_array_of_cell_area(double *vector_of_points, int number_of_cells) {
+    double *array_of_cells_area = malloc(sizeof(double) * number_of_cells);
+    double *cell = malloc(sizeof(double) * NUMBER_OF_POINTS_PER_CELL * NUMBER_OF_COORDINATES_AT_POINT);
     double areaSum = 0;
 
     MACROS_GET_ARRAY_CELL(vector_of_points, number_of_cells)

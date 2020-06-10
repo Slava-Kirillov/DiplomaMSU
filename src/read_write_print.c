@@ -5,6 +5,7 @@
 #define RED   "\x1B[31m"
 
 const char *path_to_data_directory = "../resource/data/";
+const char *path_to_result_directory = "../resource/data/result/";
 
 /**
  * Печать массива ячеек в терминал
@@ -12,7 +13,7 @@ const char *path_to_data_directory = "../resource/data/";
  * @param number_of_cell
  * @param number_of_coordinates_of_cells
  */
-void print_array_of_points(float *array, int number_of_cell, int number_of_coordinates_of_cells) {
+void print_array_of_points(double *array, int number_of_cell, int number_of_coordinates_of_cells) {
     int k = 0, i, j;
     for (i = 0; i < number_of_cell; ++i) {
         for (j = 0; j < number_of_coordinates_of_cells; ++j) {
@@ -53,11 +54,11 @@ FILE *get_file(char *filename) {
  * @param number_of_columns
  * @param number_of_rows
  */
-void write_result_to_file(char *filename, float *vector_of_points, int number_of_columns, int number_of_rows) {
-    char *path_to_data_file = malloc(sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
-    memset(path_to_data_file, 0, sizeof(char) * (strlen(filename) + strlen(path_to_data_directory)));
+void write_result_to_file(char *filename, double *vector_of_points, int number_of_columns, int number_of_rows) {
+    char *path_to_data_file = malloc(sizeof(char) * (strlen(filename) + strlen(path_to_result_directory)));
+    memset(path_to_data_file, 0, sizeof(char) * (strlen(filename) + strlen(path_to_result_directory)));
 
-    strcat(path_to_data_file, path_to_data_directory);
+    strcat(path_to_data_file, path_to_result_directory);
     strcat(path_to_data_file, filename);
 
     FILE *file = fopen(path_to_data_file, "w");
@@ -78,8 +79,8 @@ void write_result_to_file(char *filename, float *vector_of_points, int number_of
     fclose(file);
 }
 
-void print_figure_area(float *vector_of_cell_area, int number_of_cell) {
-    float area = 0;
+void print_figure_area(double *vector_of_cell_area, int number_of_cell) {
+    double area = 0;
     for (int i = 0; i < number_of_cell; ++i) {
         area += *vector_of_cell_area;
         vector_of_cell_area++;

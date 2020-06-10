@@ -20,10 +20,15 @@ subroutine INT_2_NUM(x, rut0, m, n, k, f_0, idim, res)
             p1 = (i - 0.) / m
             q1 = (j - 0.) / n
 
-            a = q * rut0(:, 2) + (1 - q) * rut0(:, 1); b = q * rut0(:, 3) + (1 - q) * rut0(:, 4)
+            a = q * rut0(2,:) + (1 - q) * rut0(1,:);
+            b = q * rut0(3,:) + (1 - q) * rut0(4,:)
+
             a1 = p * b + (1 - p) * a
             a4 = p1 * b + (1 - p1) * a
-            a = q1 * rut0(:, 2) + (1 - q1) * rut0(:, 1); b = q1 * rut0(:, 3) + (1 - q1) * rut0(:, 4);
+
+            a = q1 * rut0(2,:) + (1 - q1) * rut0(1,:);
+            b = q1 * rut0(3,:) + (1 - q1) * rut0(4,:);
+
             a2 = p * b + (1 - p) * a
             a3 = p1 * b + (1 - p1) * a
 
@@ -31,6 +36,7 @@ subroutine INT_2_NUM(x, rut0, m, n, k, f_0, idim, res)
 
             m1 = ((a2 + a3) - (a1 + a4)) / 2.
             m2 = ((a3 + a4) - (a1 + a2)) / 2.
+
             rn(1) = m1(2) * m2(3) - m1(3) * m2(2)
             rn(2) = m1(3) * m2(1) - m1(1) * m2(3)
             rn(3) = m1(1) * m2(2) - m1(2) * m2(1)

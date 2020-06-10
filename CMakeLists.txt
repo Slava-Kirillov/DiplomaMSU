@@ -3,5 +3,12 @@ project(DiplomaMSU)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(main src/main.c src/include/read_write_print.h src/read_write_print.c src/include/data_gen.h src/data_gen.c src/include/computation_service.h src/computation_service.c)
-target_link_libraries(main m)
+add_executable(DiplomaMSU
+        src/main.c
+        src/data_gen.c
+        src/read_write_print.c
+        src/computation_service.c
+        src/include/data_gen.h
+        src/include/read_write_print.h
+        src/include/computation_service.h)
+target_link_libraries(DiplomaMSU pthread m)
